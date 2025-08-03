@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tradofy - Loading</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+  body, html {
+    height: 100%;
+    margin: 0;
+    background: #0b1a0f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Orbitron', sans-serif;
+    color: #00ff6a;
+    user-select: none;
+  }
+
+  .logo {
+    font-size: 4rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: #00ff6a;
+    text-shadow:
+      0 0 10px #00ff6a,
+      0 0 20px #00ff6a,
+      0 0 40px #00ff6a,
+      0 0 80px #00ff6a;
+    margin-bottom: 1.5rem;
+    animation: glowPulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% {
+      text-shadow:
+        0 0 10px #00ff6a,
+        0 0 20px #00ff6a,
+        0 0 40px #00ff6a,
+        0 0 80px #00ff6a;
+      color: #00ff6a;
+    }
+    50% {
+      text-shadow:
+        0 0 20px #00ff6a,
+        0 0 40px #00ff6a,
+        0 0 80px #00ff6a,
+        0 0 120px #00ff6a;
+      color: #a0ffb1;
+    }
+  }
+
+  .loader {
+    width: 60px;
+    height: 60px;
+    border: 6px solid rgba(0, 255, 106, 0.2);
+    border-top-color: #00ff6a;
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite;
+    box-shadow:
+      0 0 5px #00ff6a,
+      0 0 15px #00ff6a,
+      0 0 30px #00ff6a;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
+  }
+
+  .loading-text {
+    margin-top: 1rem;
+    font-size: 1.25rem;
+    letter-spacing: 0.1em;
+    text-shadow:
+      0 0 8px #00ff6a;
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 480px) {
+    .logo {
+      font-size: 2.5rem;
+      letter-spacing: 0.2em;
+      margin-bottom: 1rem;
+    }
+
+    .loader {
+      width: 45px;
+      height: 45px;
+      border-width: 4px;
+    }
+
+    .loading-text {
+      font-size: 1rem;
+    }
+  }
+</style>
+
+<script>
+  // Redirect after 3 seconds to login.html
+  setTimeout(() => {
+    window.location.href = 'login.html';
+  }, 3000);
+</script>
+
+</head>
+<body>
+  <div class="logo">Tradofy</div>
+  <div class="loader"></div>
+  <div class="loading-text">Loading...</div>
+</body>
+</html>
