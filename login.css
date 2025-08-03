@@ -1,3 +1,46 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #0f0f0f;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  background: #1e1e1e;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px limegreen;
+  width: 300px;
+  max-width: 90vw;
+}
+
+h1 {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: lime;
+}
+
+h2 {
+  margin-bottom: 15px;
+  color: #ccc;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  background: #2a2a2a;
+  border: none;
+  color: white;
+  border-radius: 5px;
+}
+
 button {
   width: 100%;
   padding: 10px;
@@ -7,21 +50,45 @@ button {
   margin-top: 10px;
   border-radius: 5px;
   font-weight: bold;
-  box-shadow: 0 0 10px limegreen;
-  transition: 0.3s ease;
 }
 
-button:hover {
-  background: #00ff00;
-  box-shadow: 0 0 15px #00ff00, 0 0 25px #00ff00;
-  color: #000;
+a {
+  color: limegreen;
+  cursor: pointer;
 }
 
-input:focus {
-  outline: none;
-  box-shadow: 0 0 5px limegreen;
+.form.hidden {
+  display: none;
 }
 
-a:hover {
-  text-decoration: underline;
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* ✅ Mobile responsive styles */
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+
+  .container {
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 0 10px limegreen;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  input, button {
+    font-size: 16px;
+    padding: 8px;
+  }
 }
