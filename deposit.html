@@ -1,260 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Tradofy - Deposit</title>
-<style>
-  body {
-    background: #0f0f0f;
-    color: white;
-    font-family: 'Orbitron', monospace, Arial, sans-serif;
-    padding: 20px;
-  }
-  h1 {
-    color: limegreen;
-    text-align: center;
-    margin-bottom: 25px;
-  }
-  .payment-numbers {
-    background: #1e1e1e;
-    padding: 20px;
-    border-radius: 12px;
-    margin: 20px auto;
-    max-width: 450px;
-    box-shadow: 0 0 20px limegreen;
-  }
-  .payment-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    font-size: 18px;
-  }
-  .payment-label {
-    font-weight: 600;
-  }
-  .payment-number {
-    background: #222;
-    padding: 8px 12px;
-    border-radius: 8px;
-    user-select: all;
-    flex-grow: 1;
-    margin-left: 15px;
-    color: #00ff99;
-    font-family: monospace;
-    font-size: 17px;
-    box-shadow: inset 0 0 8px #00ff99;
-    overflow-wrap: break-word;
-  }
-  button.copy-btn {
-    margin-left: 15px;
-    background: linear-gradient(135deg, #00ff99, #00ccff);
-    border: none;
-    color: black;
-    padding: 8px 16px;
-    font-weight: 700;
-    border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 0 0 12px #00ff99;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  button.copy-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 18px #00ff99;
-  }
-  form#depositForm {
-    max-width: 450px;
-    margin: 30px auto 0 auto;
-    background: #1e1e1e;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 0 20px limegreen;
-  }
-  label {
-    font-size: 16px;
-    display: block;
-    margin-top: 15px;
-    font-weight: 600;
-  }
-  input[type="number"], input[type="text"] {
-    width: 100%;
-    padding: 12px;
-    margin-top: 8px;
-    border-radius: 10px;
-    border: none;
-    background: #222;
-    color: white;
-    font-size: 16px;
-    box-shadow: inset 0 0 10px #00ff99;
-    font-family: monospace;
-  }
-  button.submit-btn {
-    width: 100%;
-    margin-top: 25px;
-    padding: 15px;
-    font-size: 20px;
-    font-weight: 800;
-    color: black;
-    background: linear-gradient(135deg, #00ff99, #00ccff);
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    box-shadow: 0 0 20px #00ff99;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  button.submit-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 30px #00ff99;
-  }
-  .message {
-    text-align: center;
-    margin-top: 20px;
-    font-weight: 700;
-    color: limegreen;
-    min-height: 24px;
-    font-family: 'Orbitron', monospace;
-    user-select: none;
-  }
-  nav {
-    text-align: center;
-    margin-top: 20px;
-  }
-  nav a {
-    color: limegreen;
-    text-decoration: underline;
-    font-weight: 600;
-    cursor: pointer;
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>Deposit | Tradofy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: #0f0f0f;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: #1c1c1c;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px limegreen;
+    }
+
+    h1 {
+      text-align: center;
+      color: lime;
+      margin-bottom: 20px;
+    }
+
+    .method {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: #262626;
+      border-radius: 8px;
+    }
+
+    .method h3 {
+      margin: 0 0 5px;
+      font-size: 18px;
+      color: #00ff99;
+    }
+
+    .number {
+      background: #111;
+      padding: 8px;
+      border-radius: 5px;
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .copy-btn {
+      background: limegreen;
+      border: none;
+      padding: 5px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    input, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    input {
+      background: #222;
+      color: white;
+    }
+
+    button {
+      background: limegreen;
+      color: black;
+      font-weight: bold;
+    }
+
+    .success {
+      color: lightgreen;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Deposit</h1>
 
-<h1>Deposit Funds</h1>
+    <div class="method">
+      <h3>Bkash</h3>
+      <div class="number">
+        <span id="bkashNum">01933111154</span>
+        <button class="copy-btn" onclick="copyText('bkashNum')">Copy</button>
+      </div>
+    </div>
 
-<div class="payment-numbers" id="paymentNumbersContainer">
-  <!-- Payment numbers will be inserted here -->
-</div>
+    <div class="method">
+      <h3>Nagad</h3>
+      <div class="number">
+        <span id="nagadNum">01933111154</span>
+        <button class="copy-btn" onclick="copyText('nagadNum')">Copy</button>
+      </div>
+    </div>
 
-<form id="depositForm">
-  <label for="amount">Deposit Amount (৳):</label>
-  <input type="number" id="amount" min="10" required placeholder="Enter amount to deposit" />
+    <div class="method">
+      <h3>Rocket</h3>
+      <div class="number">
+        <span id="rocketNum">019800304675</span>
+        <button class="copy-btn" onclick="copyText('rocketNum')">Copy</button>
+      </div>
+    </div>
 
-  <label for="numberUsed">Your Payment Number (Last 4 digits):</label>
-  <input type="text" id="numberUsed" maxlength="4" minlength="4" required placeholder="Last 4 digits of your number" />
+    <div class="method">
+      <h3>Upay</h3>
+      <div class="number">
+        <span id="upayNum">01700000000</span>
+        <button class="copy-btn" onclick="copyText('upayNum')">Copy</button>
+      </div>
+    </div>
 
-  <button type="submit" class="submit-btn">Submit Deposit</button>
-</form>
+    <input type="text" id="username" placeholder="Your Username">
+    <input type="text" id="amount" placeholder="Amount">
+    <input type="text" id="lastDigits" placeholder="Last 4 Digits of Sender Number">
+    <button onclick="submitDeposit()">Submit</button>
 
-<div class="message" id="message"></div>
+    <div class="success" id="successMsg"></div>
+  </div>
 
-<nav>
-  <a href="home.html">Go to Home</a> | 
-  <a href="login.html">Logout</a>
-</nav>
-
-<script>
-  const defaultPaymentNumbers = {
-    bkash: "01933111154",
-    nagad: "01933111154",
-    rocket: "019800304675",
-    upay: "01990000000"
-  };
-
-  function loadPaymentNumbers() {
-    let nums = JSON.parse(localStorage.getItem("paymentNumbers"));
-    if (!nums) {
-      localStorage.setItem("paymentNumbers", JSON.stringify(defaultPaymentNumbers));
-      nums = defaultPaymentNumbers;
-    }
-    return nums;
-  }
-
-  function createPaymentRow(label, number) {
-    const container = document.createElement("div");
-    container.classList.add("payment-row");
-
-    const labelEl = document.createElement("div");
-    labelEl.classList.add("payment-label");
-    labelEl.textContent = label + ":";
-
-    const numberEl = document.createElement("div");
-    numberEl.classList.add("payment-number");
-    numberEl.textContent = number;
-    numberEl.title = "Click copy button to copy number";
-
-    const copyBtn = document.createElement("button");
-    copyBtn.classList.add("copy-btn");
-    copyBtn.textContent = "Copy";
-    copyBtn.addEventListener("click", () => {
-      navigator.clipboard.writeText(number).then(() => {
-        showMessage(`${label} number copied!`);
-      }).catch(() => {
-        alert("Copy failed. Please copy manually.");
-      });
-    });
-
-    container.appendChild(labelEl);
-    container.appendChild(numberEl);
-    container.appendChild(copyBtn);
-
-    return container;
-  }
-
-  function displayPaymentNumbers() {
-    const nums = loadPaymentNumbers();
-    const container = document.getElementById("paymentNumbersContainer");
-    container.innerHTML = ""; // clear
-
-    container.appendChild(createPaymentRow("bKash", nums.bkash));
-    container.appendChild(createPaymentRow("Nagad", nums.nagad));
-    container.appendChild(createPaymentRow("Rocket", nums.rocket));
-    container.appendChild(createPaymentRow("Upay", nums.upay));
-  }
-
-  function showMessage(msg) {
-    const messageEl = document.getElementById("message");
-    messageEl.textContent = msg;
-    setTimeout(() => {
-      messageEl.textContent = "";
-    }, 3000);
-  }
-
-  displayPaymentNumbers();
-
-  // Deposit form handling
-  const depositForm = document.getElementById("depositForm");
-  depositForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const amount = parseFloat(document.getElementById("amount").value);
-    const numberUsed = document.getElementById("numberUsed").value.trim();
-
-    if (amount < 10) {
-      showMessage("Minimum deposit amount is ৳10.");
-      return;
+  <script>
+    function copyText(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text);
+      alert("Copied: " + text);
     }
 
-    if (numberUsed.length !== 4 || isNaN(numberUsed)) {
-      showMessage("Please enter valid last 4 digits of your payment number.");
-      return;
+    function submitDeposit() {
+      const username = document.getElementById("username").value;
+      const amount = document.getElementById("amount").value;
+      const digits = document.getElementById("lastDigits").value;
+
+      if (!username || !amount || !digits) {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      const data = {
+        username,
+        amount,
+        digits,
+        time: new Date().toLocaleString()
+      };
+
+      // Store to localStorage for admin panel view
+      const deposits = JSON.parse(localStorage.getItem("deposits") || "[]");
+      deposits.push(data);
+      localStorage.setItem("deposits", JSON.stringify(deposits));
+
+      document.getElementById("successMsg").innerText = "Deposit request submitted!";
+      
+      // Clear inputs
+      document.getElementById("username").value = '';
+      document.getElementById("amount").value = '';
+      document.getElementById("lastDigits").value = '';
     }
 
-    // Save deposit request to localStorage
-    const deposits = JSON.parse(localStorage.getItem("depositRequests")) || [];
-    deposits.push({
-      amount,
-      numberUsed,
-      timestamp: new Date().toISOString(),
-      status: "Pending",
-      username: JSON.parse(localStorage.getItem("currentUser"))?.username || "Unknown"
-    });
-    localStorage.setItem("depositRequests", JSON.stringify(deposits));
-
-    showMessage("Deposit request submitted! Wait for admin approval.");
-    depositForm.reset();
-  });
-</script>
-
+    // For Admin Panel Sync (future option)
+    const numbers = JSON.parse(localStorage.getItem("paymentNumbers"));
+    if (numbers) {
+      document.getElementById("bkashNum").innerText = numbers.bkash;
+      document.getElementById("nagadNum").innerText = numbers.nagad;
+      document.getElementById("rocketNum").innerText = numbers.rocket;
+      document.getElementById("upayNum").innerText = numbers.upay;
+    }
+  </script>
 </body>
 </html>
