@@ -124,7 +124,15 @@ function placeTrade(direction) {
   const duration = parseInt(document.getElementById('timeSelect').value);
   candleDuration = duration;
 
-  const tradeAmount = 100; // fixed for demo, you can make dynamic
+  // ইউজারের দেওয়া amount নাও
+  const tradeAmountInput = document.getElementById('tradeAmount');
+  let tradeAmount = 100; // ডিফল্ট ১০০
+  if(tradeAmountInput){
+    const val = parseFloat(tradeAmountInput.value);
+    if(!isNaN(val) && val > 0){
+      tradeAmount = val;
+    }
+  }
 
   if (userBalance < tradeAmount) {
     alert('Insufficient Balance!');
