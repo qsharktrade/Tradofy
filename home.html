@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Tradofy - Trading Platform</title>
+<title>Tradofy - ExpertOption Style Chart</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
 <style>
   body {
@@ -75,6 +75,7 @@
     box-shadow: 0 4px 15px rgba(26, 255, 102, 0.5);
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
+    min-width: 130px;
   }
   .action-buttons button:hover {
     transform: scale(1.05);
@@ -88,19 +89,25 @@
     color: limegreen;
     text-decoration: underline;
   }
-  /* Entry marker arrow below chart center */
+  /* Entry marker arrows */
   .entry-marker {
     position: absolute;
     bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
     font-size: 28px;
-    color: limegreen;
-    display: none;
     pointer-events: none;
     user-select: none;
     animation: bounce 1.5s infinite;
     z-index: 10;
+  }
+  .entry-marker.up {
+    left: 50%;
+    color: #00ff00;
+    transform: translateX(-50%);
+  }
+  .entry-marker.down {
+    left: 50%;
+    color: #ff4d4d;
+    transform: translateX(-50%);
   }
   @keyframes bounce {
     0%, 100% { transform: translateX(-50%) translateY(0); }
@@ -116,7 +123,9 @@
 </div>
 
 <div id="chart">
-  <div class="entry-marker" id="entryMarker">▲</div>
+  <!-- Entry marker, hidden by default -->
+  <div class="entry-marker up" id="entryMarkerUp" style="display:none;">▲</div>
+  <div class="entry-marker down" id="entryMarkerDown" style="display:none;">▼</div>
 </div>
 
 <div class="trade-controls">
@@ -125,7 +134,7 @@
     <option value="5">5 Seconds</option>
     <option value="15">15 Seconds</option>
     <option value="30">30 Seconds</option>
-    <option value="60">1 Minute</option>
+    <option value="60" selected>1 Minute</option>
     <option value="180">3 Minutes</option>
     <option value="300">5 Minutes</option>
   </select>
@@ -134,161 +143,14 @@
 </div>
 
 <div class="action-buttons">
-  <button onclick="alert('Deposit Page Coming Soon')">Deposit</button>
-  <button onclick="alert('Withdraw Page Coming Soon')">Withdraw</button>
+  <button onclick="location.href='deposit.html'">Deposit</button>
+  <button onclick="location.href='withdraw.html'">Withdraw</button>
 </div>
 
 <div class="admin-link" onclick="location.href='admin.html'">Go to Admin Panel</div>
 
-<!-- Lightweight Charts CDN -->
 <script src="https://unpkg.com/lightweight-charts@3.7.0/dist/lightweight-charts.standalone.production.js"></script>
-<script>
-  let userBalance = 1000;
-  const balanceDisplay = document.getElementById('balance');
-  const entryMarker = document.getElementById('entryMarker');
+<script src="home.js"></script> <!-- এখানে আলাদা js ফাইল লিঙ্ক করা হলো -->
 
-  function updateBalanceDisplay() {
-    balanceDisplay.innerText = `৳${userBalance.toFixed(2)}`;
-  }
-  updateBalanceDisplay();
-
-  // Create chart
-  const chart = LightweightCharts.createChart(document.getElementById('chart'), {
-    width: document.getElementById('chart').clientWidth,
-    height: 300,
-    layout: {
-      backgroundColor: '#222',
-      textColor: 'white',
-    },
-    grid: {
-      vertLines: { color: '#444' },
-      horzLines: { color: '#444' },
-    },
-    crosshair: {
-      mode: LightweightCharts.CrosshairMode.Normal,
-    },
-    priceScale: {
-      borderColor: '#555',
-    },
-    timeScale: {
-      borderColor: '#555',
-      timeVisible: true,
-      secondsVisible: false,
-    },
-  });
-
-  const candleSeries = chart.addCandlestickSeries({
-    upColor: '#00ff00',
-    downColor: '#ff0000',
-    borderVisible: false,
-    wickVisible: true,
-    borderColor: '#00ff00',
-    wickColor: '#00ff00',
-  });
-
-  // Initial candles data (simulate last 30 mins)
-  let lastTimestamp = Math.floor(Date.now() / 1000);
-  let candles = [];
-
-  function generateInitialCandles() {
-    let lastClose = 100;
-    const generated = [];
-    for (let i = 30; i >= 0; i--) {
-      const time = lastTimestamp - i * 60; // 1 min intervals
-      let open = lastClose;
-      let close = open + (Math.random() - 0.5) * 4;
-      let high = Math.max(open, close) + Math.random() * 2;
-      let low = Math.min(open, close) - Math.random() * 2;
-      generated.push({
-        time: time,
-        open: +open.toFixed(2),
-        high: +high.toFixed(2),
-        low: +low.toFixed(2),
-        close: +close.toFixed(2),
-      });
-      lastClose = close;
-    }
-    return generated;
-  }
-
-  candles = generateInitialCandles();
-  candleSeries.setData(candles);
-
-  // Update chart width on resize
-  window.addEventListener('resize', () => {
-    chart.applyOptions({ width: document.getElementById('chart').clientWidth });
-  });
-
-  // This variable controls how often we generate a new candle in seconds
-  let candleDuration = 60; // default 60 seconds (1 min)
-
-  // We will keep track of seconds passed since last candle
-  let secondsSinceLastCandle = 0;
-
-  // Function to generate a new candle based on last candle
-  function generateNewCandle() {
-    const lastCandle = candles[candles.length - 1];
-    const newTime = lastCandle.time + candleDuration;
-
-    let open = lastCandle.close;
-    let close = open + (Math.random() - 0.5) * 4;
-    let high = Math.max(open, close) + Math.random() * 2;
-    let low = Math.min(open, close) - Math.random() * 2;
-
-    return {
-      time: newTime,
-      open: +open.toFixed(2),
-      high: +high.toFixed(2),
-      low: +low.toFixed(2),
-      close: +close.toFixed(2),
-    };
-  }
-
-  // Set interval every 1 second to simulate live chart
-  setInterval(() => {
-    secondsSinceLastCandle++;
-
-    if (secondsSinceLastCandle >= candleDuration) {
-      // Time to generate a new candle
-      secondsSinceLastCandle = 0;
-      candles.shift(); // remove oldest candle
-      candles.push(generateNewCandle());
-      candleSeries.setData(candles);
-    }
-    // You can also update chart or do minor updates here if needed
-  }, 1000);
-
-  function placeTrade(direction) {
-    const duration = parseInt(document.getElementById('timeSelect').value);
-    candleDuration = duration;  // update candleDuration dynamically
-
-    const tradeAmount = 100;
-
-    if(userBalance < tradeAmount) {
-      alert('Insufficient Balance!');
-      return;
-    }
-
-    userBalance -= tradeAmount;
-    updateBalanceDisplay();
-
-    // Show entry marker
-    entryMarker.style.display = 'block';
-
-    setTimeout(() => {
-      entryMarker.style.display = 'none';
-
-      const won = Math.random() < 0.85;
-      if(won) {
-        const profit = tradeAmount * 1.8;
-        userBalance += profit;
-        alert(`🎉 You WON! Profit: ৳${profit.toFixed(2)}`);
-      } else {
-        alert(`😞 You LOST! Amount: ৳${tradeAmount.toFixed(2)}`);
-      }
-      updateBalanceDisplay();
-    }, duration * 1000);
-  }
-</script>
 </body>
 </html>
