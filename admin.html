@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tradofy - Admin Panel</title>
+<style>
+  body {
+    background: #0f0f0f;
+    color: white;
+    font-family: 'Orbitron', monospace, Arial, sans-serif;
+    padding: 20px;
+  }
+  h1 {
+    color: limegreen;
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  .section {
+    background: #1e1e1e;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 0 20px limegreen;
+  }
+  label, input, button {
+    font-family: 'Orbitron', monospace;
+  }
+  label {
+    font-weight: 700;
+    display: block;
+    margin-top: 15px;
+    font-size: 16px;
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 10px;
+    border: none;
+    background: #222;
+    color: white;
+    font-size: 16px;
+    box-shadow: inset 0 0 10px #00ff99;
+  }
+  button {
+    margin-top: 15px;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-weight: 800;
+    color: black;
+    background: linear-gradient(135deg, #00ff99, #00ccff);
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0 0 20px #00ff99;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px #00ff99;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+    margin-top: 15px;
+  }
+  th, td {
+    border: 1px solid limegreen;
+    padding: 8px;
+    text-align: center;
+  }
+  th {
+    background: #333;
+  }
+  .status-pending {
+    color: orange;
+    font-weight: 700;
+  }
+  .status-approved {
+    color: limegreen;
+    font-weight: 700;
+  }
+  .logout {
+    text-align: center;
+    margin-top: 25px;
+  }
+  .logout button {
+    background: linear-gradient(135deg, #ff4444, #cc0000);
+  }
+  .message {
+    text-align: center;
+    font-weight: 700;
+    margin-top: 15px;
+    min-height: 20px;
+    color: limegreen;
+  }
+</style>
+</head>
+<body>
+
+<h1>Admin Panel</h1>
+
+<div class="section" id="paymentNumbersSection">
+  <h2>Payment Numbers</h2>
+  <label for="bkashInput">bKash Number:</label>
+  <input type="text" id="bkashInput" />
+
+  <label for="nagadInput">Nagad Number:</label>
+  <input type="text" id="nagadInput" />
+
+  <label for="rocketInput">Rocket Number:</label>
+  <input type="text" id="rocketInput" />
+
+  <label for="upayInput">Upay Number:</label>
+  <input type="text" id="upayInput" />
+
+  <button id="savePaymentNumbersBtn">Save Payment Numbers</button>
+  <div class="message" id="paymentMessage"></div>
+</div>
+
+<div class="section" id="depositRequestsSection">
+  <h2>Deposit Requests</h2>
+  <table id="depositTable">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Username</th>
+        <th>Amount (৳)</th>
+        <th>Number (Last 4 digits)</th>
+        <th>Time</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Deposit requests rows will go here -->
+    </tbody>
+  </table>
+  <div class="message" id="depositMessage"></div>
+</div>
+
+<div class="section" id="usersSection">
+  <h2>Users & Balances</h2>
+  <table id="usersTable">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Balance (৳)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Users rows go here -->
+    </tbody>
+  </table>
+</div>
+
+<div class="logout" style="max-width: 700px; margin: 30px auto;">
+  <button onclick="logoutAdmin()">Logout Admin</button>
+</div>
+
+<script>
+  const ADMIN_PASSWORD = "GTX&7687559964##@ARIYAN$";
+
+  // Simple password prompt
+  function askAdminPassword() {
+    const pass = prompt("Enter Admin Password:");
+    if (pass === ADMIN_PASSWORD) {
+      initAdminPanel();
+    } else {
+      alert("Incorrect Password!");
+      window.location.href = "login.html";
+    }
+  }
+
+  // Load payment numbers from localStorage or default
+  function loadPaymentNumbers() {
+    let nums = JSON.parse(localStorage.getItem("paymentNumbers"));
+    if (!nums) {
+      nums = {
+        bkash: "01933111154",
+        nagad: "01933111154",
+        rocket: "019800304675",
+        upay: "01990000000"
+      };
+      localStorage.setItem("paymentNumbers", JSON.stringify(nums));
+    }
+    return nums;
+  }
+
+  // Save payment numbers to localStorage
+  function savePaymentNumbers(nums) {
+    localStorage.setItem("paymentNumbers", JSON.stringify(nums));
+  }
+
+  // Load users from localStorage
+  function loadUsers() {
+    return JSON.parse(localStorage.getItem("users")) || [];
+  }
+
+  // Save users to localStorage
+  function saveUsers(users) {
+    localStorage.setItem("users", JSON.stringify(users));
+  }
+
+  // Load deposit requests from localStorage
+  function loadDepositRequests() {
+    return JSON.parse(localStorage.getItem("depositRequests")) || [];
+  }
+
+  // Save deposit requests to localStorage
+  function saveDepositRequests(requests) {
+    localStorage.setItem("depositRequests", JSON.stringify(requests));
+  }
+
+  // Update payment numbers inputs in admin panel
+  function updatePaymentNumbersInputs() {
+    const nums = loadPaymentNumbers();
+    document.getElementById("bkashInput").value = nums.bkash;
+    document.getElementById("nagadInput").value = nums.nagad;
+    document.getElementById("rocketInput").value = nums.rocket;
+    document.getElementById("upayInput").value = nums.upay;
+  }
+
+  // Render deposit requests table
+  function renderDepositRequests() {
+    const requests = loadDepositRequests();
+    const tbody = document.querySelector("#depositTable tbody");
+    tbody.innerHTML = "";
+
+    if (requests.length === 0) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 7;
+      td.style.textAlign = "center";
+      td.textContent = "No deposit requests.";
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      return;
+    }
+
+    requests.forEach((req, i) => {
+      const tr = document.createElement("tr");
+
+      const usernameTd = document.createElement("td");
+      usernameTd.textContent = req.username || "Unknown";
+
+      const amountTd = document.createElement("td");
+      amountTd.textContent = req.amount;
+
+      const numberTd = document.createElement("td");
+      numberTd.textContent = req.numberUsed;
+
+      const timeTd = document.createElement("td");
+      timeTd.textContent = new Date(req.timestamp).toLocaleString();
+
+      const statusTd = document.createElement("td");
+      statusTd.textContent = req.status;
+      statusTd.className = req.status === "Pending" ? "status-pending" : "status-approved";
+
+      const actionTd = document.createElement("td");
+      if (req.status === "Pending") {
+        const approveBtn = document.createElement("button");
+        approveBtn.textContent = "Approve";
+        approveBtn.onclick = () => approveDeposit(i);
+        actionTd.appendChild(approveBtn);
+      } else {
+        actionTd.textContent = "-";
+      }
+
+      tr.appendChild(document.createElement("td")); // Index column (#)
+      tr.children[0].textContent = i + 1;
+      tr.appendChild(usernameTd);
+      tr.appendChild(amountTd);
+      tr.appendChild(numberTd);
+      tr.appendChild(timeTd);
+      tr.appendChild(statusTd);
+      tr.appendChild(actionTd);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Approve deposit request and add balance to user
+  function approveDeposit(index) {
+    const requests = loadDepositRequests();
+    const users = loadUsers();
+
+    const req = requests[index];
+    if (req.status !== "Pending") return;
+
+    // Find user and add balance
+    const user = users.find(u => u.username === req.username);
+    if (user) {
+      user.balance = (user.balance || 0) + parseFloat(req.amount);
+    }
+
+    // Mark request approved
+    req.status = "Approved";
+
+    saveUsers(users);
+    saveDepositRequests(requests);
+    renderDepositRequests();
+    renderUsers();
+  }
+
+  // Render users table
+  function renderUsers() {
+    const users = loadUsers();
+    const tbody
