@@ -1,4 +1,4 @@
-let userBalance = 1000;
+let userBalance = 0;
 const balanceDisplay = document.getElementById('balance');
 const entryMarkerUp = document.getElementById('entryMarkerUp');
 const entryMarkerDown = document.getElementById('entryMarkerDown');
