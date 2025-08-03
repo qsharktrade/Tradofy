@@ -1,167 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Admin Panel - Tradofy</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="admin.css">
   <style>
-    body {
-      font-family: sans-serif;
-      background: #101820;
-      color: #fff;
-      padding: 20px;
-    }
-    .hidden { display: none; }
-    input, button, select {
-      padding: 10px;
-      margin: 5px 0;
-      width: 100%;
-      border-radius: 5px;
-      border: none;
-    }
-    button {
-      background: #00ff99;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .section {
-      background: #1c1c1c;
-      padding: 15px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-    }
-    h2 { margin-top: 0; }
-    .copy-btn {
-      background: #444;
-      color: #0f0;
-      font-size: 14px;
-      margin-left: 5px;
-    }
+    #adminPanel { display: none; }
   </style>
 </head>
 <body>
-  <h1>🔐 Admin Panel (Tradofy)</h1>
-
-  <div id="passwordSection">
-    <input type="password" id="adminPass" placeholder="Enter Admin Password" />
+  <h2>Admin Login</h2>
+  <div id="loginBox">
+    <input type="password" id="adminPassword" placeholder="Enter Admin Password">
     <button onclick="checkPassword()">Login</button>
-    <p id="error" style="color: red;"></p>
+    <p id="loginError" style="color: red;"></p>
   </div>
 
-  <div id="adminPanel" class="hidden">
-    <!-- Win Rate Control -->
+  <div id="adminPanel">
+    <h2>Admin Panel</h2>
+
+    <!-- Give Balance -->
     <div class="section">
-      <h2>🎯 Set Win Rate (%)</h2>
-      <input type="number" id="winRateInput" placeholder="e.g., 85" min="0" max="100" />
-      <button onclick="saveWinRate()">Save Win Rate</button>
-      <p id="winRateSaved" style="color: green;"></p>
+      <h3>Give Balance to User</h3>
+      <input type="text" id="targetUser" placeholder="Username">
+      <input type="number" id="targetAmount" placeholder="Amount">
+      <button onclick="giveBalance()">Give Balance</button>
+      <p id="balanceSent"></p>
     </div>
 
-    <!-- Change Deposit Numbers -->
+    <!-- Approve Deposit -->
     <div class="section">
-      <h2>💳 Payment Numbers</h2>
-      <label>bKash Number</label>
-      <input id="bkash" placeholder="e.g., 01XXXXXXXXX" />
-      <label>Nagad Number</label>
-      <input id="nagad" />
-      <label>Rocket Number</label>
-      <input id="rocket" />
-      <label>Upay Number</label>
-      <input id="upay" />
-      <button onclick="saveNumbers()">Save Numbers</button>
-      <p id="numberSaved" style="color: lightgreen;"></p>
+      <h3>Approve Deposits</h3>
+      <div id="depositList"></div>
     </div>
 
-    <!-- User Deposit List -->
+    <!-- Update Payment Numbers -->
     <div class="section">
-      <h2>📥 User Deposit Requests</h2>
-      <ul id="depositList"></ul>
+      <h3>Change Payment Numbers</h3>
+      <input type="text" id="bkashNumber" placeholder="Bkash Number">
+      <input type="text" id="nagadNumber" placeholder="Nagad Number">
+      <input type="text" id="rocketNumber" placeholder="Rocket Number">
+      <button onclick="updatePaymentNumbers()">Update Numbers</button>
+      <p id="paymentUpdated"></p>
     </div>
 
-    <!-- Balance Assign -->
+    <!-- Change Win Rate -->
     <div class="section">
-      <h2>💰 Give Balance to User</h2>
-      <input id="targetUser" placeholder="Username" />
-      <input id="targetAmount" placeholder="Amount" type="number" />
-      <button onclick="giveBalance()">Send Balance</button>
-      <p id="balanceSent" style="color: #0f0;"></p>
+      <h3>Set Win Rate (%)</h3>
+      <input type="number" id="winRate" placeholder="0 to 100">
+      <button onclick="updateWinRate()">Update Win Rate</button>
+      <p id="winRateUpdated"></p>
     </div>
   </div>
 
+  <script src="admin.js"></script>
   <script>
-    const adminPassword = "GTX&7687559964##@ARIYAN$"; // Your real password
+    const ADMIN_PASSWORD = "SJSJSBSBSJ&$82822"; // Change this to your secure password
 
     function checkPassword() {
-      const pass = document.getElementById("adminPass").value;
-      if (pass === adminPassword) {
-        document.getElementById("adminPanel").classList.remove("hidden");
-        document.getElementById("passwordSection").classList.add("hidden");
-        loadWinRate();
-        loadNumbers();
-        loadDeposits();
+      const input = document.getElementById("adminPassword").value;
+      if (input === ADMIN_PASSWORD) {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+        loadDeposits(); // Load deposit data
       } else {
-        document.getElementById("error").innerText = "❌ Wrong password!";
+        document.getElementById("loginError").innerText = "Incorrect Password!";
       }
-    }
-
-    function saveWinRate() {
-      const rate = parseInt(document.getElementById("winRateInput").value);
-      if (!isNaN(rate) && rate >= 0 && rate <= 100) {
-        localStorage.setItem("winRate", rate);
-        document.getElementById("winRateSaved").innerText = "✅ Saved: " + rate + "%";
-      } else {
-        alert("Enter valid % between 0-100.");
-      }
-    }
-
-    function loadWinRate() {
-      const saved = localStorage.getItem("winRate");
-      if (saved) document.getElementById("winRateInput").value = saved;
-    }
-
-    function saveNumbers() {
-      const numbers = {
-        bkash: document.getElementById("bkash").value,
-        nagad: document.getElementById("nagad").value,
-        rocket: document.getElementById("rocket").value,
-        upay: document.getElementById("upay").value
-      };
-      localStorage.setItem("paymentNumbers", JSON.stringify(numbers));
-      document.getElementById("numberSaved").innerText = "✅ Numbers saved!";
-    }
-
-    function loadNumbers() {
-      const saved = localStorage.getItem("paymentNumbers");
-      if (saved) {
-        const num = JSON.parse(saved);
-        document.getElementById("bkash").value = num.bkash || "";
-        document.getElementById("nagad").value = num.nagad || "";
-        document.getElementById("rocket").value = num.rocket || "";
-        document.getElementById("upay").value = num.upay || "";
-      }
-    }
-
-    function loadDeposits() {
-      const list = JSON.parse(localStorage.getItem("deposits") || "[]");
-      const ul = document.getElementById("depositList");
-      ul.innerHTML = "";
-      list.forEach(d => {
-        const li = document.createElement("li");
-        li.innerText = `${d.username} requested ${d.amount} via ${d.method}`;
-        ul.appendChild(li);
-      });
-    }
-
-    function giveBalance() {
-      const user = document.getElementById("targetUser").value;
-      const amount = parseFloat(document.getElementById("targetAmount").value);
-      if (!user || isNaN(amount)) return alert("Enter valid username and amount");
-
-      let balances = JSON.parse(localStorage.getItem("userBalances") || "{}");
-      balances[user] = (balances[user] || 0) + amount;
-      localStorage.setItem("userBalances", JSON.stringify(balances));
-      document.getElementById("balanceSent").innerText = `✅ ${amount} given to ${user}`;
     }
   </script>
 </body>
