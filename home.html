@@ -41,7 +41,7 @@
     gap: 10px;
     margin: 20px;
   }
-  .trade-controls select, .trade-controls button {
+  .trade-controls select, .trade-controls button, .trade-controls input {
     padding: 12px;
     font-size: 16px;
     border-radius: 8px;
@@ -119,7 +119,7 @@
 <header>Tradofy</header>
 
 <div class="balance-box">
-  Balance: <span id="balance">৳1000</span>
+  Balance: <span id="balance">৳0.00</span>
 </div>
 
 <div id="chart">
@@ -129,6 +129,9 @@
 </div>
 
 <div class="trade-controls">
+  <label for="tradeAmount">Enter Trade Amount:</label>
+  <input id="tradeAmount" type="number" min="1" value="100" />
+
   <label for="timeSelect">Select Trade Duration:</label>
   <select id="timeSelect">
     <option value="5">5 Seconds</option>
@@ -150,7 +153,7 @@
 <div class="admin-link" onclick="location.href='admin.html'">Go to Admin Panel</div>
 
 <script src="https://unpkg.com/lightweight-charts@3.7.0/dist/lightweight-charts.standalone.production.js"></script>
-<script src="home.js"></script> <!-- এখানে আলাদা js ফাইল লিঙ্ক করা হলো -->
+<script src="home.js"></script>
 
 </body>
 </html>
