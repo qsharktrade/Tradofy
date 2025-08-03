@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tradofy - Deposit</title>
+<style>
+  body {
+    background: #0f0f0f;
+    color: white;
+    font-family: 'Orbitron', monospace, Arial, sans-serif;
+    padding: 20px;
+  }
+  h1 {
+    color: limegreen;
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  .payment-numbers {
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 20px auto;
+    max-width: 450px;
+    box-shadow: 0 0 20px limegreen;
+  }
+  .payment-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 18px;
+  }
+  .payment-label {
+    font-weight: 600;
+  }
+  .payment-number {
+    background: #222;
+    padding: 8px 12px;
+    border-radius: 8px;
+    user-select: all;
+    flex-grow: 1;
+    margin-left: 15px;
+    color: #00ff99;
+    font-family: monospace;
+    font-size: 17px;
+    box-shadow: inset 0 0 8px #00ff99;
+    overflow-wrap: break-word;
+  }
+  button.copy-btn {
+    margin-left: 15px;
+    background: linear-gradient(135deg, #00ff99, #00ccff);
+    border: none;
+    color: black;
+    padding: 8px 16px;
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 12px #00ff99;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  button.copy-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 18px #00ff99;
+  }
+  form#depositForm {
+    max-width: 450px;
+    margin: 30px auto 0 auto;
+    background: #1e1e1e;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px limegreen;
+  }
+  label {
+    font-size: 16px;
+    display: block;
+    margin-top: 15px;
+    font-weight: 600;
+  }
+  input[type="number"], input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border-radius: 10px;
+    border: none;
+    background: #222;
+    color: white;
+    font-size: 16px;
+    box-shadow: inset 0 0 10px #00ff99;
+    font-family: monospace;
+  }
+  button.submit-btn {
+    width: 100%;
+    margin-top: 25px;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: 800;
+    color: black;
+    background: linear-gradient(135deg, #00ff99, #00ccff);
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0 0 20px #00ff99;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  button.submit-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px #00ff99;
+  }
+  .message {
+    text-align: center;
+    margin-top: 20px;
+    font-weight: 700;
+    color: limegreen;
+    min-height: 24px;
+    font-family: 'Orbitron', monospace;
+    user-select: none;
+  }
+  nav {
+    text-align: center;
+    margin-top: 20px;
+  }
+  nav a {
+    color: limegreen;
+    text-decoration: underline;
+    font-weight: 600;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<h1>Deposit Funds</h1>
+
+<div class="payment-numbers" id="paymentNumbersContainer">
+  <!-- Payment numbers will be inserted here -->
+</div>
+
+<form id="depositForm">
+  <label for="amount">Deposit Amount (৳):</label>
+  <input type="number" id="amount" min="10" required placeholder="Enter amount to deposit" />
+
+  <label for="numberUsed">Your Payment Number (Last 4 digits):</label>
+  <input type="text" id="numberUsed" maxlength="4" minlength="4" required placeholder="Last 4 digits of your number" />
+
+  <button type="submit" class="submit-btn">Submit Deposit</button>
+</form>
+
+<div class="message" id="message"></div>
+
+<nav>
+  <a href="home.html">Go to Home</a> | 
+  <a href="login.html">Logout</a>
+</nav>
+
+<script>
+  const defaultPaymentNumbers = {
+    bkash: "01933111154",
+    nagad: "01933111154",
+    rocket: "019800304675",
+    upay: "01990000000"
+  };
+
+  function loadPaymentNumbers() {
+    let nums = JSON.parse(localStorage.getItem("paymentNumbers"));
+    if (!nums) {
+      localStorage.setItem("paymentNumbers", JSON.stringify(defaultPaymentNumbers));
+      nums = defaultPaymentNumbers;
+    }
+    return nums;
+  }
+
+  function createPaymentRow(label, number) {
+    const container = document.createElement("div");
+    container.classList.add("payment-row");
+
+    const labelEl = document.createElement("div");
+    labelEl.classList.add("payment-label");
+    labelEl.textContent = label + ":";
+
+    const numberEl = document.createElement("div");
+    numberEl.classList.add("payment-number");
+    numberEl.textContent = number;
+    numberEl.title = "Click copy button to copy number";
+
+    const copyBtn = document.createElement("button");
+    copyBtn.classList.add("copy-btn");
+    copyBtn.textContent = "Copy";
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(number).then(() => {
+        showMessage(`${label} number copied!`);
+      }).catch(() => {
+        alert("Copy failed. Please copy manually.");
+      });
+    });
+
+    container.appendChild(labelEl);
+    container.appendChild(numberEl);
+    container.appendChild(copyBtn);
+
+    return container;
+  }
+
+  function displayPaymentNumbers() {
+    const nums = loadPaymentNumbers();
+    const container = document.getElementById("paymentNumbersContainer");
+    container.innerHTML = ""; // clear
+
+    container.appendChild(createPaymentRow("bKash", nums.bkash));
+    container.appendChild(createPaymentRow("Nagad", nums.nagad));
+    container.appendChild(createPaymentRow("Rocket", nums.rocket));
+    container.appendChild(createPaymentRow("Upay", nums.upay));
+  }
+
+  function showMessage(msg) {
+    const messageEl = document.getElementById("message");
+    messageEl.textContent = msg;
+    setTimeout(() => {
+      messageEl.textContent = "";
+    }, 3000);
+  }
+
+  displayPaymentNumbers();
+
+  // Deposit form handling
+  const depositForm = document.getElementById("depositForm");
+  depositForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const amount = parseFloat(document.getElementById("amount").value);
+    const numberUsed = document.getElementById("numberUsed").value.trim();
+
+    if (amount < 10) {
+      showMessage("Minimum deposit amount is ৳10.");
+      return;
+    }
+
+    if (numberUsed.length !== 4 || isNaN(numberUsed)) {
+      showMessage("Please enter valid last 4 digits of your payment number.");
+      return;
+    }
+
+    // Save deposit request to localStorage
+    const deposits = JSON.parse(localStorage.getItem("depositRequests")) || [];
+    deposits.push({
+      amount,
+      numberUsed,
+      timestamp: new Date().toISOString(),
+      status: "Pending",
+      username: JSON.parse(localStorage.getItem("currentUser"))?.username || "Unknown"
+    });
+    localStorage.setItem("depositRequests", JSON.stringify(deposits));
+
+    showMessage("Deposit request submitted! Wait for admin approval.");
+    depositForm.reset();
+  });
+</script>
+
+</body>
+</html>
