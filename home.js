@@ -1,14 +1,27 @@
-let userBalance = 0;
+// ================== Setup =====================
 const balanceDisplay = document.getElementById('balance');
 const entryMarkerUp = document.getElementById('entryMarkerUp');
 const entryMarkerDown = document.getElementById('entryMarkerDown');
 const chartDiv = document.getElementById('chart');
+
+// ইউজারের নাম লোকালস্টোরেজ থেকে নাও, নাহলে guest ধরে নাও
+const currentUser = localStorage.getItem("currentUser") || "guest";
+
+// ইউজার ব্যালেন্স লোকালস্টোরেজ থেকে লোড করো
+let userBalances = JSON.parse(localStorage.getItem("userBalances") || "{}");
+let userBalance = parseFloat(userBalances[currentUser]) || 0;
 
 function updateBalanceDisplay() {
   balanceDisplay.innerText = `৳${userBalance.toFixed(2)}`;
 }
 updateBalanceDisplay();
 
+function saveUserBalance() {
+  userBalances[currentUser] = userBalance;
+  localStorage.setItem("userBalances", JSON.stringify(userBalances));
+}
+
+// ================== Chart Setup =====================
 const chart = LightweightCharts.createChart(chartDiv, {
   width: chartDiv.clientWidth,
   height: 300,
@@ -42,8 +55,8 @@ const candleSeries = chart.addCandlestickSeries({
   wickColor: '#00ff00',
 });
 
-// Initialize with 30 candles (1 candle per minute)
-let candleDuration = 60;
+// Initialize candles
+let candleDuration = 60; // seconds
 let candles = [];
 let lastTimestamp = Math.floor(Date.now() / 1000) - (29 * candleDuration);
 
@@ -61,7 +74,7 @@ function generateRandomCandle(time, prevClose) {
   };
 }
 
-// Generate initial candles
+// Generate initial 30 candles
 let prevClose = 100;
 for(let i=0; i<30; i++) {
   const candle = generateRandomCandle(lastTimestamp + i * candleDuration, prevClose);
@@ -70,17 +83,15 @@ for(let i=0; i<30; i++) {
 }
 candleSeries.setData(candles);
 
-// Update chart width on resize
 window.addEventListener('resize', () => {
   chart.applyOptions({ width: chartDiv.clientWidth });
 });
 
-// Single candle live update variables
+// Live candle update
 let currentCandleStart = candles[candles.length - 1].time;
 let currentCandle = candles[candles.length - 1];
 let secondsElapsed = 0;
 
-// Update current candle every second
 function updateCurrentCandle() {
   secondsElapsed++;
   const volatility = 1.5;
@@ -108,12 +119,12 @@ function updateCurrentCandle() {
 }
 setInterval(updateCurrentCandle, 1000);
 
-// Place trade function with correct win/lose logic
+// ================== Trade Logic =====================
 function placeTrade(direction) {
   const duration = parseInt(document.getElementById('timeSelect').value);
   candleDuration = duration;
 
-  const tradeAmount = 100;
+  const tradeAmount = 100; // fixed for demo, you can make dynamic
 
   if (userBalance < tradeAmount) {
     alert('Insufficient Balance!');
@@ -122,8 +133,9 @@ function placeTrade(direction) {
 
   userBalance -= tradeAmount;
   updateBalanceDisplay();
+  saveUserBalance();
 
-  // Show marker for trade direction
+  // Show entry marker
   if (direction === 'call') {
     entryMarkerUp.style.display = 'block';
     entryMarkerDown.style.display = 'none';
@@ -138,12 +150,13 @@ function placeTrade(direction) {
     entryMarkerUp.style.display = 'none';
     entryMarkerDown.style.display = 'none';
 
-    const exitPrice = currentCandle.close;
+    // Get admin-set winRate (default 85%)
+    let winRate = parseInt(localStorage.getItem("winRate") || "85");
 
+    // Random chance to decide win or lose based on winRate
+    const randomChance = Math.random() * 100;
     let won = false;
-    if (direction === 'call' && exitPrice > entryPrice) {
-      won = true;
-    } else if (direction === 'put' && exitPrice < entryPrice) {
+    if (randomChance <= winRate) {
       won = true;
     }
 
@@ -154,6 +167,9 @@ function placeTrade(direction) {
     } else {
       alert(`😞 You LOST! Amount: ৳${tradeAmount.toFixed(2)}`);
     }
+
     updateBalanceDisplay();
+    saveUserBalance();
+
   }, duration * 1000);
-    }
+}
