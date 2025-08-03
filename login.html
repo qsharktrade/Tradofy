@@ -2,22 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Tradofy Login/Register</title>
-  <!-- CSS ফাইল লিংক -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tradofy Login</title>
   <link rel="stylesheet" href="login.css" />
 </head>
 <body>
   <div class="container">
     <h1>Tradofy</h1>
-    
+
     <!-- Login Form -->
     <form id="loginForm" class="form">
       <h2>Login</h2>
       <input type="text" id="loginUsername" placeholder="Username" required />
       <input type="password" id="loginPassword" placeholder="Password" required />
       <button type="submit">Login</button>
-      <p>Don't have an account? <a href="#" id="showRegister">Register</a></p>
+      <p>Don't have an account? <a id="showRegister" href="#">Register</a></p>
       <p id="loginError" class="error"></p>
     </form>
 
@@ -28,12 +27,11 @@
       <input type="text" id="registerUsername" placeholder="Username" required />
       <input type="password" id="registerPassword" placeholder="Password" required />
       <button type="submit">Register</button>
-      <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
+      <p>Already have an account? <a id="showLogin" href="#">Login</a></p>
       <p id="registerError" class="error"></p>
     </form>
   </div>
 
-  <!-- JS ফাইল লিংক -->
-  <script src="login.js" defer></script>
+  <script src="login.js"></script>
 </body>
 </html>
