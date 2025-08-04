@@ -40,6 +40,12 @@ registerForm.addEventListener("submit", function (e) {
   // Save user
   users.push({ email, username, password });
   localStorage.setItem("users", JSON.stringify(users));
+
+  // নতুন ইউজারের জন্য balance 0 সেট করো
+  let balances = JSON.parse(localStorage.getItem("userBalances") || "{}");
+  balances[username] = 0;
+  localStorage.setItem("userBalances", JSON.stringify(balances));
+
   registerError.style.color = "limegreen";
   registerError.textContent = "Registration successful! Please login.";
 
